@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="ms" data-theme="pdrm">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Pilihan B] Pemantauan Platform — Pengurusan Kandungan Portal PDRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- daisyUI 5 + Tailwind CSS 4 (asas sama seperti templat Nexus) -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2/dist/iconify-icon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.54.1/dist/apexcharts.min.js"></script>
+
+  <style>
+    /* Tema "pdrm" — sama seperti laman awam V3 */
+    [data-theme="pdrm"] {
+      color-scheme: light;
+      --color-base-100: #ffffff;
+      --color-base-200: #f2f5f9;
+      --color-base-300: #dfe5ee;
+      --color-base-content: #13233a;
+      --color-primary: #09175d;
+      --color-primary-content: #ffffff;
+      --color-secondary: #c9a227;
+      --color-secondary-content: #13233a;
+      --color-accent: #c8102e;
+      --color-accent-content: #ffffff;
+      --color-neutral: #050e3d;
+      --color-neutral-content: #ffffff;
+      --color-info: #2563eb;
+      --color-info-content: #ffffff;
+      --color-success: #16a34a;
+      --color-success-content: #ffffff;
+      --color-warning: #f59e0b;
+      --color-warning-content: #13233a;
+      --color-error: #dc2626;
+      --color-error-content: #ffffff;
+      --radius-selector: 0.375rem;
+      --radius-field: 0.375rem;
+      --radius-box: 0.625rem;
+      --border: 1px;
+      --depth: 0;
+      --noise: 0;
+    }
+  </style>
+  <style type="text/tailwindcss">
+    @theme {
+      --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+      --font-heading: "Montserrat", "Poppins", ui-sans-serif, sans-serif;
+      /* Daftar token daisyUI supaya utiliti Tailwind mengenalinya */
+      --color-base-100: #ffffff;
+      --color-base-200: #f2f5f9;
+      --color-base-300: #dfe5ee;
+      --color-base-content: #13233a;
+      --color-primary: #09175d;
+      --color-primary-content: #ffffff;
+      --color-secondary: #c9a227;
+      --color-secondary-content: #13233a;
+      --color-accent: #c8102e;
+      --color-accent-content: #ffffff;
+      --color-neutral: #050e3d;
+      --color-neutral-content: #ffffff;
+      --color-info: #2563eb;
+      --color-success: #16a34a;
+      --color-warning: #f59e0b;
+      --color-error: #dc2626;
+      --radius-box: 0.625rem;
+      --radius-field: 0.375rem;
+      --radius-selector: 0.375rem;
+    }
+    @layer base {
+      body { @apply bg-base-200 text-base-content antialiased; }
+      h1, h2, h3, .font-heading { font-family: var(--font-heading); }
+    }
+    /* Menu sisi (gaya sidebar Nexus) */
+    .side-label { @apply px-3 pt-5 pb-1.5 text-[11px] font-semibold tracking-wider text-white/40 uppercase; }
+    .side-link { @apply flex items-center gap-3 rounded-field px-3 py-2 text-sm text-white/75 transition hover:bg-white/8 hover:text-white; }
+    .side-link iconify-icon { @apply text-[18px] shrink-0; }
+    .side-link.is-active { @apply bg-white/10 text-white font-medium shadow-[inset_3px_0_0_var(--color-secondary)]; }
+    .side-sub { @apply ms-[38px] mt-0.5 space-y-0.5 border-s border-white/10 ps-3; }
+    .side-sub a { @apply block rounded-field px-2 py-1.5 text-[13px] text-white/60 hover:text-white; }
+    details[open] > summary .chev { transform: rotate(90deg); }
+    .badge { white-space: nowrap; }
+    summary::-webkit-details-marker { display: none; }
+  </style>
+</head>
+<body class="bg-base-200">
+<style>
+  /* ===== Pilihan B: navigasi atas, kad rata bersempadan ===== */
+  body { background: #f4f6f9; }
+  .card { box-shadow: none !important; border: 1px solid var(--color-base-300); }
+  .topnav-item { position: relative; display: flex; align-items: stretch; }
+  .topnav-item > a { display: flex; align-items: center; gap: 6px; padding: 0 14px; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.72); border-bottom: 2px solid transparent; white-space: nowrap; }
+  .topnav-item > a:hover, .topnav-item:focus-within > a { color: #fff; }
+  .topnav-item.is-active > a { color: #fff; border-bottom-color: var(--color-secondary); }
+  .topnav-item > a iconify-icon.chev { font-size: 12px; transition: transform .2s; }
+  .topnav-item:hover > a iconify-icon.chev { transform: rotate(180deg); }
+  .topnav-dd { position: absolute; top: 100%; left: 0; padding-top: 6px; z-index: 60; visibility: hidden; opacity: 0; transform: translateY(4px);
+    transition: opacity .15s ease .2s, transform .15s ease .2s, visibility 0s linear .35s; }
+  .topnav-item:hover > .topnav-dd, .topnav-item:focus-within > .topnav-dd { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; }
+  .topnav-dd-panel { background: #fff; border: 1px solid var(--color-base-300); border-radius: var(--radius-box); box-shadow: 0 18px 40px -12px rgba(9,23,93,.28); padding: 8px; min-width: 240px; }
+  .topnav-dd-panel a { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-field); font-size: 14px; color: #13233a; }
+  .topnav-dd-panel a:hover { background: #f2f5f9; }
+  .topnav-dd-panel a iconify-icon { font-size: 17px; color: var(--color-primary); }
+  .topnav-dd-panel .dd-label { padding: 8px 10px 4px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: rgba(19,35,58,.45); }
+</style>
+<style>
+  .topnav-dd-panel.cols-2 { display: grid; grid-template-columns: 1fr 1fr; column-gap: 8px; min-width: 470px; }
+  .topnav-dd-panel a { white-space: nowrap; }
+  .scroll-mt-20 { scroll-margin-top: 176px !important; }
+  .subtab { padding: 14px 10px; font-size: 13.5px; font-weight: 500; color: rgba(19,35,58,.6); border-bottom: 2px solid transparent; white-space: nowrap; }
+  .subtab:hover { color: var(--color-primary); }
+  .subtab.is-on { color: var(--color-primary); border-bottom-color: var(--color-secondary); }
+</style>
+
+<!-- ======================= HEADER (navy, 2 baris) ======================= -->
+<header class="bg-primary sticky top-0 z-40 text-white shadow-[0_1px_0_rgba(255,255,255,.06)]">
+  <div class="mx-auto flex h-16 max-w-[1440px] items-center gap-4 px-4 lg:px-8">
+    <label for="b-drawer" class="btn btn-ghost btn-square btn-sm text-white lg:hidden" aria-label="Buka menu"><iconify-icon icon="lucide:menu" class="text-xl"></iconify-icon></label>
+    <a href="index.html" class="flex items-center gap-3">
+      <img src="https://rmp2u.rmp.gov.my/media/36685" alt="Logo PDRM" class="h-9 w-auto" />
+      <span class="leading-tight max-sm:hidden"><span class="font-heading block text-sm font-bold">Portal PDRM</span><span class="block text-[11px] text-white/55">Pengurusan Kandungan</span></span>
+    </a>
+    <button class="mx-auto hidden h-9 w-full max-w-md items-center gap-2 rounded-field bg-white/10 px-3 text-sm text-white/60 ring-1 ring-white/10 transition hover:bg-white/15 md:flex" onclick="searchModal.showModal()">
+      <iconify-icon icon="lucide:search"></iconify-icon>Cari kandungan, sebut harga, pengguna...<kbd class="kbd kbd-xs ms-auto border-white/20 bg-white/10 text-white/70">⌘K</kbd>
+    </button>
+    <div class="ms-auto flex items-center gap-1 md:ms-0">
+      <a href="../index-v3.html" target="_blank" class="btn btn-ghost btn-sm text-white/80 hover:bg-white/10 max-sm:btn-square"><iconify-icon icon="lucide:external-link" class="text-base"></iconify-icon><span class="max-xl:hidden">Lihat Portal</span></a>
+      <div class="dropdown dropdown-end">
+        <button tabindex="0" class="btn btn-ghost btn-sm text-white/80 hover:bg-white/10">BM</button>
+        <ul tabindex="0" class="dropdown-content menu bg-base-100 text-base-content rounded-box border-base-300 z-50 mt-2 w-40 border p-1.5 shadow-lg"><li><a class="menu-active">Bahasa Melayu</a></li><li><a>English</a></li></ul>
+      </div>
+      <div class="dropdown dropdown-end">
+        <button tabindex="0" class="btn btn-ghost btn-sm btn-square indicator text-white/80 hover:bg-white/10" aria-label="Notifikasi"><span class="indicator-item badge badge-secondary badge-xs top-1 right-1 size-2 p-0"></span><iconify-icon icon="lucide:bell" class="text-lg"></iconify-icon></button>
+        <div tabindex="0" class="dropdown-content bg-base-100 text-base-content rounded-box border-base-300 z-50 mt-2 w-80 border shadow-lg">
+          <div class="border-base-300 flex items-center justify-between border-b px-4 py-3"><p class="font-medium">Notifikasi</p><span class="badge badge-sm badge-soft badge-accent">4 baharu</span></div>
+          <ul class="divide-base-300 divide-y text-sm">
+            <li class="flex gap-3 px-4 py-3"><span class="bg-warning/15 text-warning flex size-8 flex-none items-center justify-center rounded-full"><iconify-icon icon="lucide:clock"></iconify-icon></span><span><b class="font-medium">3 kandungan</b> menunggu kelulusan anda<br /><span class="text-base-content/50 text-xs">5 minit lalu</span></span></li>
+            <li class="flex gap-3 px-4 py-3"><span class="bg-error/15 text-error flex size-8 flex-none items-center justify-center rounded-full"><iconify-icon icon="lucide:alarm-clock"></iconify-icon></span><span>Sebut harga JPJKK/SH/031 tutup dalam 2 hari<br /><span class="text-base-content/50 text-xs">1 jam lalu</span></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="dropdown dropdown-end">
+        <button tabindex="0" class="btn btn-ghost btn-sm h-10 gap-2 px-1.5 text-white hover:bg-white/10">
+          <div class="avatar avatar-placeholder"><div class="bg-secondary text-secondary-content w-8 rounded-full"><span class="text-xs font-bold">PP</span></div></div>
+          <span class="text-start leading-tight max-lg:hidden"><span class="block text-sm font-medium">Pentadbir Portal</span><span class="block text-[11px] font-normal text-white/55">Super Admin</span></span>
+        </button>
+        <ul tabindex="0" class="dropdown-content menu bg-base-100 text-base-content rounded-box border-base-300 z-50 mt-2 w-52 border p-1.5 shadow-lg">
+          <li><a><iconify-icon icon="lucide:user"></iconify-icon>Profil Saya</a></li><li><a><iconify-icon icon="lucide:key-round"></iconify-icon>Tukar Kata Laluan</a></li>
+          <div class="divider my-1"></div><li><a class="text-error"><iconify-icon icon="lucide:log-out"></iconify-icon>Log Keluar</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigasi utama mendatar -->
+  <nav class="hidden border-t border-white/10 lg:block" aria-label="Menu utama">
+    <ul class="mx-auto flex h-12 max-w-[1440px] items-stretch px-4 lg:px-5">
+      <li class="topnav-item"><a href="index.html"><iconify-icon icon="lucide:layout-dashboard" class="text-base"></iconify-icon>Papan Pemuka</a></li>
+      <li class="topnav-item"><a href="kandungan.html"><iconify-icon icon="lucide:newspaper" class="text-base"></iconify-icon>Kandungan<iconify-icon icon="lucide:chevron-down" class="chev"></iconify-icon></a><div class="topnav-dd"><div class="topnav-dd-panel cols-2"><div><p class="dd-label">Pengurusan Kandungan</p><a href="kandungan.html#senarai"><iconify-icon icon="lucide:list"></iconify-icon>Semua Kandungan</a><a href="kandungan.html#editor"><iconify-icon icon="lucide:pen-line"></iconify-icon>Editor &amp; Semakan</a><a href="kandungan.html#jenis"><iconify-icon icon="lucide:blocks"></iconify-icon>Jenis &amp; Medan</a><a href="kandungan.html#taksonomi"><iconify-icon icon="lucide:tags"></iconify-icon>Kategori &amp; Tag</a><a href="kandungan.html#arkib"><iconify-icon icon="lucide:archive"></iconify-icon>Arkib</a></div><div><p class="dd-label">Media</p><a href="#"><iconify-icon icon="lucide:calendar-days"></iconify-icon>Takwim Aktiviti</a><a href="#"><iconify-icon icon="lucide:images"></iconify-icon>Galeri</a><a href="#"><iconify-icon icon="lucide:folder-open"></iconify-icon>Pustaka Media</a></div></div></div></li>
+      <li class="topnav-item"><a href="perolehan.html"><iconify-icon icon="lucide:gavel" class="text-base"></iconify-icon>Perolehan<span class="badge badge-xs badge-secondary border-0">3</span></a></li>
+      <li class="topnav-item"><a href="#"><iconify-icon icon="lucide:globe" class="text-base"></iconify-icon>Laman Web<iconify-icon icon="lucide:chevron-down" class="chev"></iconify-icon></a><div class="topnav-dd"><div class="topnav-dd-panel"><div><a href="#"><iconify-icon icon="lucide:gallery-horizontal-end"></iconify-icon>Banner &amp; Hebahan</a><a href="#"><iconify-icon icon="lucide:menu-square"></iconify-icon>Menu Navigasi</a><a href="#"><iconify-icon icon="lucide:link"></iconify-icon>e-Perkhidmatan</a><a href="#"><iconify-icon icon="lucide:siren"></iconify-icon>Nur Alert</a><a href="#"><iconify-icon icon="lucide:circle-help"></iconify-icon>Soalan Lazim</a><a href="#"><iconify-icon icon="lucide:handshake"></iconify-icon>Rakan Strategik</a></div></div></div></li>
+      <li class="topnav-item"><a href="#"><iconify-icon icon="lucide:inbox" class="text-base"></iconify-icon>Maklum Balas<span class="badge badge-xs badge-accent border-0">12</span></a></li>
+      <li class="topnav-item"><a href="#"><iconify-icon icon="lucide:shield" class="text-base"></iconify-icon>Pentadbiran<iconify-icon icon="lucide:chevron-down" class="chev"></iconify-icon></a><div class="topnav-dd"><div class="topnav-dd-panel"><div><a href="#"><iconify-icon icon="lucide:users"></iconify-icon>Pengguna &amp; Peranan</a><a href="#"><iconify-icon icon="lucide:scroll-text"></iconify-icon>Log Audit</a><a href="#"><iconify-icon icon="lucide:settings"></iconify-icon>Tetapan Umum</a></div></div></div></li>
+      <li class="topnav-item is-active"><a href="platform.html"><iconify-icon icon="lucide:activity" class="text-base"></iconify-icon>Platform<iconify-icon icon="lucide:chevron-down" class="chev"></iconify-icon></a><div class="topnav-dd"><div class="topnav-dd-panel"><div><a href="platform.html#status"><iconify-icon icon="lucide:gauge"></iconify-icon>Status &amp; Prestasi</a><a href="platform.html#berkala"><iconify-icon icon="lucide:clock"></iconify-icon>Proses Berkala</a><a href="platform.html#queue"><iconify-icon icon="lucide:list-ordered"></iconify-icon>Queue</a><a href="platform.html#konfigurasi"><iconify-icon icon="lucide:sliders-horizontal"></iconify-icon>Konfigurasi</a><a href="platform.html#skema"><iconify-icon icon="lucide:database"></iconify-icon>Skema &amp; Rollback</a></div></div></div></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Laci mudah alih -->
+<div class="drawer z-50 lg:hidden">
+  <input id="b-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-side">
+    <label for="b-drawer" class="drawer-overlay" aria-label="Tutup"></label>
+    <ul class="menu bg-base-100 min-h-full w-80 p-4">
+      <li><a href="index.html">Papan Pemuka</a></li>
+      <li><details><summary>Kandungan</summary><ul><li><a href="kandungan.html#senarai">Semua Kandungan</a></li><li><a href="kandungan.html#editor">Editor &amp; Semakan</a></li><li><a href="kandungan.html#jenis">Jenis &amp; Medan</a></li><li><a href="kandungan.html#taksonomi">Kategori &amp; Tag</a></li><li><a href="kandungan.html#arkib">Arkib</a></li></ul></details></li>
+      <li><a href="perolehan.html">Perolehan</a></li>
+      <li><details><summary>Laman Web</summary><ul><li><a>Banner &amp; Hebahan</a></li><li><a>Menu Navigasi</a></li><li><a>e-Perkhidmatan</a></li><li><a>Nur Alert</a></li></ul></details></li>
+      <li><a>Maklum Balas</a></li>
+      <li><details><summary>Pentadbiran</summary><ul><li><a>Pengguna &amp; Peranan</a></li><li><a>Log Audit</a></li></ul></details></li>
+      <li><details><summary>Platform</summary><ul><li><a href="platform.html#status">Status &amp; Prestasi</a></li><li><a href="platform.html#berkala">Proses Berkala</a></li><li><a href="platform.html#queue">Queue</a></li><li><a href="platform.html#konfigurasi">Konfigurasi</a></li><li><a href="platform.html#skema">Skema &amp; Rollback</a></li></ul></details></li>
+    </ul>
+  </div>
+</div>
+
+<div class="border-base-300 sticky top-16 z-30 border-b bg-white lg:top-28">
+  <div class="mx-auto flex max-w-[1440px] items-center gap-6 overflow-x-auto px-4 [scrollbar-width:none] lg:px-8">
+    <span class="font-heading flex-none py-3 text-sm font-semibold text-primary">Platform</span>
+    <span class="bg-base-300 h-5 w-px flex-none"></span>
+    <nav class="flex gap-1" aria-label="Bahagian halaman"><a href="#status" class="subtab">Status &amp; Prestasi</a><a href="#berkala" class="subtab">Proses Berkala</a><a href="#queue" class="subtab">Queue</a><a href="#konfigurasi" class="subtab">Konfigurasi</a><a href="#skema" class="subtab">Skema &amp; Rollback</a></nav>
+  </div>
+</div>
+
+<div class="mx-auto w-full max-w-[1440px] lg:px-4">
+    <main class="p-4 lg:py-6">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 class="text-xl font-bold">Pemantauan &amp; Pengurusan Platform</h1>
+          <div class="breadcrumbs text-base-content/60 p-0 text-sm"><ul><li><a href="index.html">CMS Portal PDRM</a></li><li>Platform</li><li>Pemantauan</li></ul></div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-base-content/60 flex items-center gap-1.5 text-sm"><span class="relative flex size-2"><span class="bg-success absolute inline-flex size-full animate-ping rounded-full opacity-60"></span><span class="bg-success relative inline-flex size-2 rounded-full"></span></span>Dikemas kini <span id="lastRefresh">baru sahaja</span></span>
+          <button class="btn btn-sm gap-2" id="refreshBtn"><iconify-icon icon="lucide:refresh-cw"></iconify-icon>Muat Semula</button>
+          <label class="btn btn-sm gap-2"><input type="checkbox" class="toggle toggle-xs toggle-warning" id="maintToggle" />Mod Penyelenggaraan</label>
+        </div>
+      </div>
+
+      <!-- ================= STATUS PERKHIDMATAN ================= -->
+      <div id="status" class="mt-5 grid scroll-mt-20 grid-cols-2 gap-4 md:grid-cols-3 2xl:grid-cols-6">
+        <div class="card bg-base-100 shadow-sm"><div class="card-body gap-1 p-4"><div class="flex items-center justify-between"><iconify-icon icon="lucide:globe" class="text-primary text-xl"></iconify-icon><span class="badge badge-xs badge-success badge-soft">Beroperasi</span></div><p class="mt-2 text-sm font-medium">Portal Awam</p><p class="text-base-content/50 text-xs">Uptime 30h: 99.98%</p></div></div>
+        <div class="card bg-base-100 shadow-sm"><div class="card-body gap-1 p-4"><div class="flex items-center justify-between"><iconify-icon icon="lucide:layout-dashboard" class="text-primary text-xl"></iconify-icon><span class="badge badge-xs badge-success badge-soft">Beroperasi</span></div><p class="mt-2 text-sm font-medium">CMS / API</p><p class="text-base-content/50 text-xs">Uptime 30h: 99.95%</p></div></div>
+        <div class="card bg-base-100 shadow-sm"><div class="card-body gap-1 p-4"><div class="flex items-center justify-between"><iconify-icon icon="lucide:database" class="text-primary text-xl"></iconify-icon><span class="badge badge-xs badge-success badge-soft">Beroperasi</span></div><p class="mt-2 text-sm font-medium">Pangkalan Data</p><p class="text-base-content/50 text-xs">PostgreSQL 16 · 42 sambungan</p></div></div>
+        <div class="card bg-base-100 shadow-sm"><div class="card-body gap-1 p-4"><div class="flex items-center justify-between"><iconify-icon icon="lucide:zap" class="text-primary text-xl"></iconify-icon><span class="badge badge-xs badge-success badge-soft">Beroperasi</span></div><p class="mt-2 text-sm font-medium">Cache</p><p class="text-base-content/50 text-xs">Redis · hit ratio 94.2%</p></div></div>
+        <div class="card bg-base-100 shadow-sm"><div class="card-body gap-1 p-4"><div class="flex items-center justify-between"><iconify-icon icon="lucide:list-ordered" class="text-primary text-xl"></iconify-icon><span class="badge badge-xs badge-warning badge-soft">Perlahan</span></div><p class="mt-2 text-sm font-medium">Queue Worker</p><p class="text-base-content/50 text-xs">3/4 worker aktif</p></div></div>
+        <div class="card bg-base-100 shadow-sm"><div class="card-body gap-1 p-4"><div class="flex items-center justify-between"><iconify-icon icon="lucide:hard-drive" class="text-primary text-xl"></iconify-icon><span class="badge badge-xs badge-success badge-soft">Beroperasi</span></div><p class="mt-2 text-sm font-medium">Storan Media</p><p class="text-base-content/50 text-xs">31 / 50 GB (62%)</p></div></div>
+      </div>
+
+      <!-- ================= PRESTASI ================= -->
+      <div class="mt-5 grid grid-cols-12 gap-5">
+        <div class="card bg-base-100 col-span-12 shadow-sm xl:col-span-8">
+          <div class="card-body">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div><h2 class="font-semibold">Prestasi Sistem</h2><p class="text-base-content/60 text-sm">Masa respons (p95) dan permintaan seminit · 24 jam lepas</p></div>
+              <div class="flex gap-4 text-sm"><div><p class="text-base-content/50 text-xs">p95 semasa</p><p class="font-heading font-bold">182 ms</p></div><div><p class="text-base-content/50 text-xs">Permintaan/min</p><p class="font-heading font-bold">1,940</p></div><div><p class="text-base-content/50 text-xs">Kadar ralat</p><p class="font-heading text-success font-bold">0.04%</p></div></div>
+            </div>
+            <div id="perfChart" class="-mx-2 mt-2"></div>
+          </div>
+        </div>
+        <div class="card bg-base-100 col-span-12 shadow-sm md:col-span-6 xl:col-span-4">
+          <div class="card-body">
+            <h2 class="font-semibold">Sumber Pelayan</h2>
+            <p class="text-base-content/60 text-sm">app-01 · app-02 (purata)</p>
+            <div id="resChart" class="-mx-2"></div>
+            <ul class="mt-auto space-y-2 text-sm">
+              <li class="flex justify-between"><span class="text-base-content/60">Versi aplikasi</span><b class="font-medium">v1.4.2</b></li>
+              <li class="flex justify-between"><span class="text-base-content/60">Masa operasi pelayan</span><b class="font-medium">18 hari 4 jam</b></li>
+              <li class="flex justify-between"><span class="text-base-content/60">Sijil SSL tamat</span><b class="font-medium">12 Mac 2027</b></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ================= PROSES BERKALA ================= -->
+        <div id="berkala" class="card bg-base-100 col-span-12 scroll-mt-20 shadow-sm 2xl:col-span-7">
+          <div class="card-body p-0">
+            <div class="flex items-center justify-between px-5 pt-5"><div><h2 class="font-semibold">Proses Berkala (Scheduler)</h2><p class="text-base-content/60 text-sm">Tugasan automatik yang dijalankan mengikut jadual</p></div><span class="badge badge-sm badge-soft badge-success">Scheduler aktif</span></div>
+            <div class="mt-3 overflow-x-auto">
+              <table class="table table-sm">
+                <thead><tr class="bg-base-200/60 text-base-content/60"><th>Tugasan</th><th>Jadual</th><th>Terakhir</th><th>Seterusnya</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><p class="font-medium">Sandaran pangkalan data</p><p class="text-base-content/50 text-xs">backup:run --only-db</p></td><td><code class="text-xs">0 2 * * *</code><br /><span class="text-base-content/50 text-xs">Setiap hari, 2:00 pg</span></td><td class="text-sm whitespace-nowrap">Hari ini 2:00 pg<br /><span class="text-base-content/50 text-xs">4m 12s</span></td><td class="text-sm whitespace-nowrap">Esok 2:00 pg</td><td><span class="badge badge-sm badge-soft badge-success">Berjaya</span></td><td><button class="btn btn-ghost btn-xs gap-1 run-btn"><iconify-icon icon="lucide:play"></iconify-icon>Jalankan</button></td></tr>
+                  <tr><td><p class="font-medium">Tutup perolehan tamat tempoh</p><p class="text-base-content/50 text-xs">perolehan:tutup-automatik</p></td><td><code class="text-xs">* * * * *</code><br /><span class="text-base-content/50 text-xs">Setiap minit</span></td><td class="text-sm whitespace-nowrap">1 minit lalu<br /><span class="text-base-content/50 text-xs">0.3s</span></td><td class="text-sm whitespace-nowrap">Dalam 1 minit</td><td><span class="badge badge-sm badge-soft badge-success">Berjaya</span></td><td><button class="btn btn-ghost btn-xs gap-1 run-btn"><iconify-icon icon="lucide:play"></iconify-icon>Jalankan</button></td></tr>
+                  <tr><td><p class="font-medium">Terbit kandungan berjadual</p><p class="text-base-content/50 text-xs">kandungan:terbit-berjadual</p></td><td><code class="text-xs">*/5 * * * *</code><br /><span class="text-base-content/50 text-xs">Setiap 5 minit</span></td><td class="text-sm whitespace-nowrap">3 minit lalu<br /><span class="text-base-content/50 text-xs">0.8s</span></td><td class="text-sm whitespace-nowrap">Dalam 2 minit</td><td><span class="badge badge-sm badge-soft badge-success">Berjaya</span></td><td><button class="btn btn-ghost btn-xs gap-1 run-btn"><iconify-icon icon="lucide:play"></iconify-icon>Jalankan</button></td></tr>
+                  <tr><td><p class="font-medium">Arkib kandungan tamat tempoh</p><p class="text-base-content/50 text-xs">kandungan:arkib-automatik</p></td><td><code class="text-xs">30 0 * * *</code><br /><span class="text-base-content/50 text-xs">Setiap hari, 12:30 pg</span></td><td class="text-sm whitespace-nowrap">Hari ini 12:30 pg<br /><span class="text-base-content/50 text-xs">12 diarkib</span></td><td class="text-sm whitespace-nowrap">Esok 12:30 pg</td><td><span class="badge badge-sm badge-soft badge-success">Berjaya</span></td><td><button class="btn btn-ghost btn-xs gap-1 run-btn"><iconify-icon icon="lucide:play"></iconify-icon>Jalankan</button></td></tr>
+                  <tr><td><p class="font-medium">Jana sitemap.xml &amp; kalendar.ics</p><p class="text-base-content/50 text-xs">sitemap:generate · perolehan:ical</p></td><td><code class="text-xs">0 * * * *</code><br /><span class="text-base-content/50 text-xs">Setiap jam</span></td><td class="text-sm whitespace-nowrap">Hari ini 6:00 ptg<br /><span class="text-base-content/50 text-xs">2.1s</span></td><td class="text-sm whitespace-nowrap">7:00 ptg</td><td><span class="badge badge-sm badge-soft badge-success">Berjaya</span></td><td><button class="btn btn-ghost btn-xs gap-1 run-btn"><iconify-icon icon="lucide:play"></iconify-icon>Jalankan</button></td></tr>
+                  <tr class="bg-error/5"><td><p class="font-medium">Sinkron statistik pelawat</p><p class="text-base-content/50 text-xs">analitik:sinkron</p></td><td><code class="text-xs">*/15 * * * *</code><br /><span class="text-base-content/50 text-xs">Setiap 15 minit</span></td><td class="text-sm whitespace-nowrap">Hari ini 6:15 ptg<br /><span class="text-error text-xs">Tamat masa (30s)</span></td><td class="text-sm whitespace-nowrap">6:30 ptg</td><td><span class="badge badge-sm badge-soft badge-error">Gagal</span></td><td><button class="btn btn-ghost btn-xs gap-1 run-btn"><iconify-icon icon="lucide:rotate-cw"></iconify-icon>Cuba semula</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= QUEUE ================= -->
+        <div id="queue" class="card bg-base-100 col-span-12 scroll-mt-20 shadow-sm 2xl:col-span-5">
+          <div class="card-body">
+            <div class="flex items-center justify-between"><div><h2 class="font-semibold">Queue</h2><p class="text-base-content/60 text-sm">Kerja latar belakang mengikut saluran</p></div><button class="btn btn-xs gap-1"><iconify-icon icon="lucide:pause"></iconify-icon>Jeda semua</button></div>
+            <div class="mt-3 overflow-x-auto">
+              <table class="table table-sm">
+                <thead><tr class="text-base-content/60"><th>Saluran</th><th class="text-right">Menunggu</th><th class="text-right">Diproses</th><th class="text-right">Gagal</th><th>Beban</th></tr></thead>
+                <tbody>
+                  <tr><td class="font-medium">default</td><td class="text-right">4</td><td class="text-right">1</td><td class="text-right">0</td><td><progress class="progress progress-success h-1.5 w-20" value="10" max="100"></progress></td></tr>
+                  <tr><td class="font-medium">emel-notifikasi</td><td class="text-right">12</td><td class="text-right">2</td><td class="text-right">0</td><td><progress class="progress progress-success h-1.5 w-20" value="25" max="100"></progress></td></tr>
+                  <tr><td class="font-medium">pemprosesan-media</td><td class="text-right font-semibold text-warning">186</td><td class="text-right">1</td><td class="text-right text-error">3</td><td><progress class="progress progress-warning h-1.5 w-20" value="78" max="100"></progress></td></tr>
+                  <tr><td class="font-medium">indeks-carian</td><td class="text-right">0</td><td class="text-right">0</td><td class="text-right">0</td><td><progress class="progress h-1.5 w-20" value="0" max="100"></progress></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mt-4 text-sm font-medium">Kerja Gagal Terkini</p>
+            <ul class="divide-base-300 mt-1 divide-y text-sm" id="failedJobs">
+              <li class="flex items-start justify-between gap-3 py-2.5"><span><b class="font-medium">ResizeImage</b> · galeri/hari-polis-219/IMG_0412.jpg<br /><span class="text-error text-xs">Memori habis (256 MB) · percubaan 3/3</span></span><button class="btn btn-xs retry-btn">Cuba semula</button></li>
+              <li class="flex items-start justify-between gap-3 py-2.5"><span><b class="font-medium">ResizeImage</b> · galeri/hari-polis-219/IMG_0418.jpg<br /><span class="text-error text-xs">Memori habis (256 MB) · percubaan 3/3</span></span><button class="btn btn-xs retry-btn">Cuba semula</button></li>
+              <li class="flex items-start justify-between gap-3 py-2.5"><span><b class="font-medium">GenerateVideoThumb</b> · video/merdeka-69.mp4<br /><span class="text-error text-xs">ffmpeg: format tidak disokong</span></span><button class="btn btn-xs retry-btn">Cuba semula</button></li>
+            </ul>
+            <div class="mt-2 flex gap-2"><button class="btn btn-sm grow">Cuba semula semua</button><button class="btn btn-sm btn-ghost text-error">Buang semua</button></div>
+          </div>
+        </div>
+
+        <!-- ================= KONFIGURASI ================= -->
+        <div id="konfigurasi" class="card bg-base-100 col-span-12 scroll-mt-20 shadow-sm xl:col-span-7">
+          <div class="card-body">
+            <div class="flex flex-wrap items-center justify-between gap-2"><div><h2 class="font-semibold">Konfigurasi Platform</h2><p class="text-base-content/60 text-sm">Setiap perubahan direkod dalam log audit dan boleh dipulihkan</p></div><div class="flex gap-2"><button class="btn btn-sm btn-ghost">Batal</button><button class="btn btn-sm btn-primary" id="saveCfg">Simpan Perubahan</button></div></div>
+            <div class="mt-3 overflow-x-auto">
+              <table class="table table-sm">
+                <thead><tr class="text-base-content/60"><th>Kunci</th><th>Nilai</th><th>Persekitaran</th><th>Diubah</th></tr></thead>
+                <tbody>
+                  <tr><td><code class="text-xs">app.locale_default</code><p class="text-base-content/50 text-xs">Bahasa lalai portal</p></td><td><select class="select select-xs w-28"><option>ms</option><option>en</option></select></td><td><span class="badge badge-xs">semua</span></td><td class="text-xs whitespace-nowrap">2 Sep · Super Admin</td></tr>
+                  <tr><td><code class="text-xs">cache.ttl_halaman</code><p class="text-base-content/50 text-xs">Tempoh cache halaman awam (saat)</p></td><td><input class="input input-xs w-28" value="300" /></td><td><span class="badge badge-xs">produksi</span></td><td class="text-xs whitespace-nowrap">14 Okt · Pentadbir</td></tr>
+                  <tr><td><code class="text-xs">media.saiz_maks_mb</code><p class="text-base-content/50 text-xs">Saiz maksimum muat naik</p></td><td><input class="input input-xs w-28" value="20" /></td><td><span class="badge badge-xs">semua</span></td><td class="text-xs whitespace-nowrap">1 Jun · Super Admin</td></tr>
+                  <tr><td><code class="text-xs">perolehan.countdown_awam</code><p class="text-base-content/50 text-xs">Papar countdown di portal awam</p></td><td><input type="checkbox" class="toggle toggle-xs toggle-success" checked /></td><td><span class="badge badge-xs">semua</span></td><td class="text-xs whitespace-nowrap">9 Nov · Pentadbir</td></tr>
+                  <tr><td><code class="text-xs">kandungan.wajib_semakan</code><p class="text-base-content/50 text-xs">Kandungan perlu disemak sebelum terbit</p></td><td><input type="checkbox" class="toggle toggle-xs toggle-success" checked /></td><td><span class="badge badge-xs">produksi</span></td><td class="text-xs whitespace-nowrap">20 Mei · Super Admin</td></tr>
+                  <tr><td><code class="text-xs">ciri.carian_semantik</code><p class="text-base-content/50 text-xs">Feature flag · carian pintar (beta)</p></td><td><input type="checkbox" class="toggle toggle-xs toggle-success" /></td><td><span class="badge badge-xs badge-warning badge-soft">staging</span></td><td class="text-xs whitespace-nowrap">3 Nov · Pembangun</td></tr>
+                  <tr><td><code class="text-xs">mel.pengirim</code><p class="text-base-content/50 text-xs">Alamat emel notifikasi</p></td><td><input class="input input-xs w-44" value="noreply@rmp.gov.my" /></td><td><span class="badge badge-xs">produksi</span></td><td class="text-xs whitespace-nowrap">2 Jan · Super Admin</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sejarah konfigurasi -->
+        <div class="card bg-base-100 col-span-12 shadow-sm xl:col-span-5">
+          <div class="card-body">
+            <h2 class="font-semibold">Sejarah Perubahan Konfigurasi</h2>
+            <ul class="mt-2 space-y-3 text-sm">
+              <li class="flex gap-3"><span class="bg-info/10 text-info flex size-8 flex-none items-center justify-center rounded-full"><iconify-icon icon="lucide:sliders-horizontal"></iconify-icon></span><div class="grow"><p><code class="text-xs">perolehan.countdown_awam</code>: <span class="text-error line-through">false</span> → <span class="text-success">true</span></p><p class="text-base-content/50 text-xs">Hari ini, 11:20 pg · Pentadbir Portal</p></div><button class="btn btn-ghost btn-xs">Pulihkan</button></li>
+              <li class="flex gap-3"><span class="bg-info/10 text-info flex size-8 flex-none items-center justify-center rounded-full"><iconify-icon icon="lucide:sliders-horizontal"></iconify-icon></span><div class="grow"><p><code class="text-xs">cache.ttl_halaman</code>: <span class="text-error line-through">600</span> → <span class="text-success">300</span></p><p class="text-base-content/50 text-xs">14 Okt, 3:02 ptg · Pentadbir Portal</p></div><button class="btn btn-ghost btn-xs">Pulihkan</button></li>
+              <li class="flex gap-3"><span class="bg-info/10 text-info flex size-8 flex-none items-center justify-center rounded-full"><iconify-icon icon="lucide:sliders-horizontal"></iconify-icon></span><div class="grow"><p><code class="text-xs">ciri.carian_semantik</code>: dicipta (staging)</p><p class="text-base-content/50 text-xs">3 Nov, 9:47 pg · Pembangun</p></div><button class="btn btn-ghost btn-xs">Pulihkan</button></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ================= PENGESANAN PERUBAHAN SKEMA ================= -->
+        <div id="skema" class="card bg-base-100 col-span-12 scroll-mt-20 shadow-sm xl:col-span-7">
+          <div class="card-body">
+            <div class="flex flex-wrap items-center justify-between gap-2"><div><h2 class="font-semibold">Pengesanan Perubahan Skema</h2><p class="text-base-content/60 text-sm">Membandingkan pangkalan data produksi dengan fail migrasi · semakan terakhir 6:00 ptg</p></div><button class="btn btn-sm gap-2" id="scanBtn"><iconify-icon icon="lucide:scan-search"></iconify-icon>Imbas Sekarang</button></div>
+            <div role="alert" class="alert alert-warning alert-soft mt-3 items-start">
+              <iconify-icon icon="lucide:triangle-alert" class="mt-0.5 text-lg"></iconify-icon>
+              <div class="text-sm"><p class="font-semibold">2 perbezaan skema dikesan</p><p>Perubahan dibuat terus pada pangkalan data tanpa fail migrasi. Ini boleh menyebabkan ralat semasa deployment seterusnya.</p></div>
+            </div>
+            <div class="bg-neutral text-neutral-content rounded-box mt-3 overflow-x-auto p-4 font-mono text-xs leading-relaxed">
+              <p class="text-white/50">-- jadual: kandungan</p>
+              <p><span class="text-success">+ ringkasan_en      TEXT NULL</span>   <span class="text-white/40">-- wujud di DB, tiada dalam migrasi</span></p>
+              <p class="mt-2 text-white/50">-- jadual: perolehan</p>
+              <p><span class="text-error">- harga_dokumen     NUMERIC(8,2)</span></p>
+              <p><span class="text-success">+ harga_dokumen     NUMERIC(10,2)</span>   <span class="text-white/40">-- jenis lajur berubah</span></p>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-2"><button class="btn btn-sm btn-primary gap-2"><iconify-icon icon="lucide:file-code-2"></iconify-icon>Jana Fail Migrasi</button><button class="btn btn-sm gap-2"><iconify-icon icon="lucide:undo-2"></iconify-icon>Kembalikan DB ikut Migrasi</button><button class="btn btn-sm btn-ghost">Abaikan</button></div>
+
+            <p class="mt-5 text-sm font-medium">Migrasi Terkini</p>
+            <div class="overflow-x-auto">
+              <table class="table table-sm">
+                <thead><tr class="text-base-content/60"><th>Batch</th><th>Migrasi</th><th>Dijalankan</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td>18</td><td><code class="text-xs">2026_11_02_add_countdown_flag_to_perolehan</code></td><td class="text-xs whitespace-nowrap">2 Nov 2026</td><td><button class="btn btn-ghost btn-xs gap-1" onclick="rollbackModal.showModal()"><iconify-icon icon="lucide:undo-2"></iconify-icon>Rollback</button></td></tr>
+                  <tr><td>17</td><td><code class="text-xs">2026_10_20_create_kandungan_versi_table</code></td><td class="text-xs whitespace-nowrap">20 Okt 2026</td><td></td></tr>
+                  <tr><td>17</td><td><code class="text-xs">2026_10_20_add_bahasa_to_kategori</code></td><td class="text-xs whitespace-nowrap">20 Okt 2026</td><td></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= ROLLBACK ================= -->
+        <div class="card bg-base-100 col-span-12 self-start shadow-sm xl:col-span-5">
+          <div class="card-body">
+            <h2 class="font-semibold">Versi Deployment &amp; Rollback</h2>
+            <p class="text-base-content/60 text-sm">Kembali ke versi aplikasi sebelumnya jika berlaku masalah selepas deployment.</p>
+            <ul class="mt-3 space-y-3">
+              <li class="border-success/40 bg-success/5 rounded-box border p-3">
+                <div class="flex items-center justify-between"><p class="font-heading font-bold">v1.4.2 <span class="badge badge-xs badge-success ms-1 align-middle">Semasa</span></p><span class="text-base-content/50 text-xs">2 Nov 2026, 11:40 ptg</span></div>
+                <p class="text-base-content/70 mt-1 text-sm">Countdown perolehan &amp; eksport iCalendar</p>
+                <p class="text-base-content/50 mt-1 font-mono text-xs">commit a3f9c21 · oleh Pembangun · migrasi batch 18</p>
+              </li>
+              <li class="border-base-300 rounded-box border p-3">
+                <div class="flex items-center justify-between"><p class="font-heading font-bold">v1.4.1</p><span class="text-base-content/50 text-xs">20 Okt 2026, 10:15 ptg</span></div>
+                <p class="text-base-content/70 mt-1 text-sm">Versi kandungan &amp; kategori dwibahasa</p>
+                <div class="mt-2 flex items-center justify-between"><p class="text-base-content/50 font-mono text-xs">commit 7be04d8 · batch 17</p><button class="btn btn-xs btn-warning btn-soft gap-1" onclick="rollbackModal.showModal()"><iconify-icon icon="lucide:history"></iconify-icon>Rollback ke versi ini</button></div>
+              </li>
+              <li class="border-base-300 rounded-box border p-3">
+                <div class="flex items-center justify-between"><p class="font-heading font-bold">v1.4.0</p><span class="text-base-content/50 text-xs">1 Okt 2026, 11:02 ptg</span></div>
+                <p class="text-base-content/70 mt-1 text-sm">Reka bentuk baharu portal awam</p>
+                <div class="mt-2 flex items-center justify-between"><p class="text-base-content/50 font-mono text-xs">commit 1c88e5a · batch 16</p><button class="btn btn-xs btn-warning btn-soft gap-1" onclick="rollbackModal.showModal()"><iconify-icon icon="lucide:history"></iconify-icon>Rollback ke versi ini</button></div>
+              </li>
+            </ul>
+            <p class="text-base-content/50 mt-3 text-xs">Sandaran pangkalan data automatik diambil sebelum setiap rollback.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+
+    <!-- Modal pengesahan rollback -->
+    <dialog id="rollbackModal" class="modal">
+      <div class="modal-box">
+        <h3 class="flex items-center gap-2 font-semibold"><iconify-icon icon="lucide:triangle-alert" class="text-warning text-xl"></iconify-icon>Sahkan Rollback ke v1.4.1</h3>
+        <ul class="mt-3 list-disc space-y-1 ps-5 text-sm">
+          <li>Kod aplikasi dikembalikan ke commit <code>7be04d8</code></li>
+          <li>Migrasi batch 18 akan di-rollback (1 migrasi)</li>
+          <li>Sandaran pangkalan data diambil secara automatik terlebih dahulu</li>
+          <li>Portal awam masuk mod penyelenggaraan ±2 minit</li>
+        </ul>
+        <fieldset class="fieldset mt-3"><legend class="fieldset-legend">Sebab rollback <span class="text-error">*</span></legend><textarea class="textarea w-full" placeholder="cth: Ralat paparan countdown pada pelayar Safari"></textarea></fieldset>
+        <fieldset class="fieldset"><legend class="fieldset-legend">Taip <b>ROLLBACK</b> untuk sahkan</legend><input class="input w-full" id="rbConfirm" placeholder="ROLLBACK" /></fieldset>
+        <div class="modal-action"><form method="dialog"><button class="btn btn-sm">Batal</button></form><button class="btn btn-sm btn-warning" id="rbGo" disabled>Laksanakan Rollback</button></div>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button>tutup</button></form>
+    </dialog>
+
+    <div class="toast toast-end z-50" id="toastBox"></div>
+
+
+    
+</div>
+
+<footer class="text-base-content/50 mx-auto flex max-w-[1440px] flex-wrap justify-between gap-2 px-4 py-6 text-xs lg:px-8">
+  <p>© 2026 Polis Diraja Malaysia · Pengurusan Kandungan Portal</p><p>Versi 1.0.0 · Reka bentuk Pilihan B</p>
+</footer>
+
+<!-- Modal carian -->
+<dialog id="searchModal" class="modal modal-top sm:modal-middle">
+  <div class="modal-box p-0">
+    <label class="input input-lg border-base-300 w-full rounded-none border-0 border-b focus-within:outline-none"><iconify-icon icon="lucide:search" class="opacity-50"></iconify-icon><input type="search" placeholder="Cari kandungan, sebut harga, pengguna..." /></label>
+    <div class="p-4 text-sm"><p class="text-base-content/50 text-xs font-semibold uppercase">Pintasan</p>
+      <ul class="menu mt-2 w-full p-0"><li><a href="kandungan.html#editor"><iconify-icon icon="lucide:plus"></iconify-icon>Tambah berita baharu</a></li><li><a href="perolehan.html"><iconify-icon icon="lucide:gavel"></iconify-icon>Sebut harga baharu</a></li><li><a href="platform.html"><iconify-icon icon="lucide:activity"></iconify-icon>Status platform</a></li></ul>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>tutup</button></form>
+</dialog>
+
+<script>
+
+  // Data contoh untuk mockup
+  const navy = '#09175d', gold = '#c9a227';
+  const hours = Array.from({ length: 24 }, (_, i) => pad2((19 + i) % 24) + ':00');
+  function pad2(n) { return String(n).padStart(2, '0'); }
+  const p95 = [168,172,160,151,140,138,142,150,176,205,231,248,236,219,224,240,262,251,229,210,198,190,186,182];
+  const rpm = [1520,1380,1100,820,610,540,590,880,1520,2210,2680,2950,2810,2640,2700,2880,3120,2990,2710,2450,2230,2100,2010,1940];
+  // Lukis carta selepas halaman & gaya Tailwind siap dimuatkan
+  function initCharts() {
+    new ApexCharts(document.querySelector('#perfChart'), {
+      chart: { height: 290, toolbar: { show: false }, fontFamily: 'Poppins, sans-serif', zoom: { enabled: false } },
+      series: [{ name: 'Masa respons p95 (ms)', type: 'line', data: p95 }, { name: 'Permintaan/min', type: 'area', data: rpm }],
+      colors: [gold, navy], stroke: { curve: 'smooth', width: [3, 2] },
+      fill: { type: ['solid', 'gradient'], gradient: { opacityFrom: 0.22, opacityTo: 0.02 } },
+      xaxis: { categories: hours, tickAmount: 8, labels: { style: { colors: '#64748b' }, rotate: 0 }, axisBorder: { show: false }, axisTicks: { show: false } },
+      yaxis: [{ title: { text: 'ms', style: { color: '#64748b' } }, labels: { style: { colors: '#64748b' } } },
+              { opposite: true, labels: { style: { colors: '#64748b' }, formatter: v => (v / 1000).toFixed(1) + 'k' } }],
+      dataLabels: { enabled: false }, grid: { borderColor: '#e5eaf1', strokeDashArray: 4 }, legend: { position: 'top', horizontalAlign: 'right' },
+    }).render();
+
+    new ApexCharts(document.querySelector('#resChart'), {
+      chart: { type: 'radialBar', height: 250, fontFamily: 'Poppins, sans-serif' },
+      series: [38, 64, 62], labels: ['CPU', 'Memori', 'Cakera'], colors: [navy, gold, '#94a3b8'],
+      plotOptions: { radialBar: { hollow: { size: '30%' }, track: { background: '#eef2f7' }, dataLabels: { name: { fontSize: '12px' }, value: { fontSize: '14px', fontWeight: 600 }, total: { show: true, label: 'Purata', formatter: () => '55%' } } } },
+      legend: { show: true, position: 'bottom', fontSize: '12px' },
+    }).render();
+  }
+  if (document.readyState === 'complete') initCharts(); else window.addEventListener('load', initCharts);
+
+  // Toast ringkas
+  function toast(msg, type = 'success') {
+    const el = document.createElement('div');
+    el.className = `alert alert-${type} text-sm shadow-lg`;
+    el.innerHTML = `<iconify-icon icon="lucide:${type === 'success' ? 'circle-check' : 'info'}"></iconify-icon><span>${msg}</span>`;
+    document.getElementById('toastBox').appendChild(el); setTimeout(() => el.remove(), 3500);
+  }
+
+  // Jalankan tugasan berkala secara manual
+  document.querySelectorAll('.run-btn').forEach(b => b.addEventListener('click', () => {
+    const row = b.closest('tr'), name = row.querySelector('p').textContent;
+    b.innerHTML = '<span class="loading loading-spinner loading-xs"></span>'; b.disabled = true;
+    setTimeout(() => {
+      row.classList.remove('bg-error/5');
+      row.querySelector('td:nth-child(3)').innerHTML = 'Baru sahaja<br /><span class="text-base-content/50 text-xs">dijalankan manual</span>';
+      row.querySelector('td:nth-child(5)').innerHTML = '<span class="badge badge-sm badge-soft badge-success">Berjaya</span>';
+      b.innerHTML = '<iconify-icon icon="lucide:play"></iconify-icon>Jalankan'; b.disabled = false;
+      toast(`"${name}" selesai dijalankan`);
+    }, 1200);
+  }));
+
+  // Cuba semula kerja gagal
+  document.querySelectorAll('.retry-btn').forEach(b => b.addEventListener('click', () => { b.closest('li').remove(); toast('Kerja dihantar semula ke queue', 'info'); }));
+
+  // Muat semula & mod penyelenggaraan
+  document.getElementById('refreshBtn').addEventListener('click', () => { document.getElementById('lastRefresh').textContent = 'baru sahaja'; toast('Status platform dikemas kini', 'info'); });
+  document.getElementById('maintToggle').addEventListener('change', e => toast(e.target.checked ? 'Mod penyelenggaraan DIAKTIFKAN — portal awam memaparkan notis' : 'Mod penyelenggaraan dimatikan', e.target.checked ? 'warning' : 'success'));
+  document.getElementById('saveCfg').addEventListener('click', () => toast('Konfigurasi disimpan dan direkod dalam log audit'));
+  document.getElementById('scanBtn').addEventListener('click', e => { const b = e.currentTarget; b.innerHTML = '<span class="loading loading-spinner loading-xs"></span>Mengimbas...'; setTimeout(() => { b.innerHTML = '<iconify-icon icon="lucide:scan-search"></iconify-icon>Imbas Sekarang'; toast('Imbasan selesai · 2 perbezaan masih wujud', 'warning'); }, 1500); });
+
+  // Pengesahan rollback: perlu taip ROLLBACK
+  const rbInput = document.getElementById('rbConfirm'), rbGo = document.getElementById('rbGo');
+  rbInput.addEventListener('input', () => rbGo.disabled = rbInput.value.trim() !== 'ROLLBACK');
+  rbGo.addEventListener('click', () => { rollbackModal.close(); rbInput.value = ''; rbGo.disabled = true; toast('Rollback dimulakan · sandaran DB sedang diambil', 'warning'); });
+
+  // Sorot tab sub-halaman mengikut bahagian yang kelihatan
+  (() => {
+    const tabs = [...document.querySelectorAll('.subtab')];
+    const secs = tabs.map(t => document.querySelector(t.getAttribute('href'))).filter(Boolean);
+    const on = () => {
+      let cur = secs[0];
+      secs.forEach(s => { if (s.getBoundingClientRect().top < 200) cur = s; });
+      tabs.forEach(t => t.classList.toggle('is-on', cur && t.getAttribute('href') === '#' + cur.id));
+    };
+    addEventListener('scroll', on, { passive: true }); on();
+  })();
+
+</script>
+</body>
+</html>
